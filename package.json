@@ -1,0 +1,35 @@
+{
+  "name": "convex-solid-client",
+  "version": "0.1.0",
+  "description": "TypeScript client library for Convex in SolidJS",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sideways-Sky/convex-solid-client.git"
+  },
+  "keywords": [
+    "convex",
+    "database",
+    "solid",
+    "solidjs"
+  ],
+  "author": "Sideway Sky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sideways-Sky/convex-solid-client/issues"
+  },
+  "homepage": "https://github.com/Sideways-Sky/convex-solid-client#readme",
+  "devDependencies": {
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  },
+  "peerDependencies": {
+    "convex": "^1.15.0",
+    "solid-js": "^1.8.22"
+  }
+}
