@@ -21,7 +21,7 @@ export type progressTracking = {
   both: { average: number; individual: Map<string, number> }
 }
 
-export function useUploadFiles<pt extends keyof progressTracking = "both", ptArgs = progressTracking[pt]>(
+export function createUploadFiles<pt extends keyof progressTracking = "both", ptArgs = progressTracking[pt]>(
   uploadUrl: string | (() => Awaitable<string>),
   opts?: {
     progressTracking?: pt
@@ -87,7 +87,7 @@ export function useUploadFiles<pt extends keyof progressTracking = "both", ptArg
   }
 }
 
-export function useUploadFile(
+export function createUploadFile(
   uploadUrl: string | (() => Awaitable<string>),
   opts?: {
     onProgressChange?: (progress: number, file: fileDef) => void
