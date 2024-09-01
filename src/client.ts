@@ -22,6 +22,19 @@ const useConvex = () => {
   return convex
 }
 
+/**
+ * Load a reactive query within a Solid component.
+ *
+ * Creates Solid signal will be updated with the result of the query
+ * whenever the query result changes.
+ *
+ * Throws an error if not used under {@link ConvexContext}.
+ *
+ * @param query - A {@link FunctionReference} for the public query to run. ie: `api.messages.get`
+ * @param args - The arguments to the query function
+ * @returns Solid signal that will be updated whenever the query result changes. if the query is not yet loaded, the signal will be `undefined`.
+ * @public
+ */
 export function createQuery<Query extends FunctionReference<"query">>(query: Query, ...args: OptionalFunctionArgs<Query>): () => FunctionReturnType<Query> | undefined {
   const convex = useConvex()
   const argsObj = args[0] ?? {}
@@ -30,6 +43,20 @@ export function createQuery<Query extends FunctionReference<"query">>(query: Que
   })
 }
 
+/**
+ * Construct a new {@link Mutation}.
+ *
+ * Mutation objects can be called like functions to request execution of the
+ * corresponding Convex function.
+ *
+ * Throws an error if not used under {@link ConvexContext}.
+ *
+ * @param mutation - A {@link server.FunctionReference} for the public mutation to run. ie: `api.messages.create`
+ * @param update - An optional {@link OptimisticUpdate} function to use for optimistic updates.
+ * @returns The {@link Mutation} function.
+ *
+ * @public
+ */
 export function createMutation<M extends FunctionReference<"mutation">>(mutation: M, update?: OptimisticUpdate<FunctionArgs<M>>): Mutation<M> {
   const convex = useConvex()
   return (...passedArgs) => {
@@ -38,6 +65,19 @@ export function createMutation<M extends FunctionReference<"mutation">>(mutation
   }
 }
 
+/**
+ * Construct a new {@link Action}.
+ *
+ * Action objects can be called like functions to request execution of the
+ * corresponding Convex function.
+ *
+ * Throws an error if not used under {@link ConvexContext}.
+ *
+ * @param action - A {@link FunctionReference} for the public action to run. ie: `api.ai.generateResponse`
+ * @returns The {@link Action} function.
+ *
+ * @public
+ */
 export function createAction<A extends FunctionReference<"action">>(action: A): Action<A> {
   const convex = useConvex()
   return (...passedArgs) => {

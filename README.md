@@ -2,10 +2,10 @@
 
 TypeScript client library for Convex in SolidJS.
 
-`npm install convex-solid-client`
-`pnpm install convex-solid-client`
-`yarn add convex-solid-client`
-`bun add convex-solid-client`
+`npm install convex-solid-client` <br />
+`pnpm install convex-solid-client` <br />
+`yarn add convex-solid-client` <br />
+`bun add convex-solid-client` <br />
 
 ### Setup
 
@@ -30,11 +30,12 @@ render(
 
 ## Usage
 
-Basic Usage
+#### Basic Usage
 
 ```tsx
 const sendMessage = createMutation(api.messages.create)
 const messages = createQuery(api.messages.get)
+// there's also createAction
 
 const [newMessage, setNewMessage] = createSignal("")
 
@@ -47,13 +48,26 @@ return (
 )
 ```
 
-Uploading Files
+#### Uploading Files
+
+There's also:
+
+- `createUploadFile` for simpler usage when you only need to upload one file
+- `uploadFiles` and `uploadFile` for more control over the upload process
 
 ```tsx
 const generateUploadUrl = createMutation(api.files.generateUploadUrl)
-const { startUpload, isUploading } = useUploadFile(generateUploadUrl, {
+const { startUpload, isUploading } = createUploadFiles(generateUploadUrl, {
   onProgressChange: (progress) => {
     console.log(progress)
+  },
+  onFullUpload(upload, files) {
+    // called after all files have been uploaded
+    // optionally: do something with the response...
+  },
+  onIndividualUpload(upload, file) {
+    // called immediately after each individual file upload
+    // optionally: do something with the response...
   },
 })
 
@@ -66,24 +80,21 @@ return (
         if (!e.target.files?.length) {
           return
         }
-        const {
-          response: { storageId },
-          name,
-          size,
-          type,
-        } = await startUpload(e.target.files[0])
+        const files = Array.from(e.target.files)
+        const uploaded = await startUpload(files)
+        // optionally: do something with the response... (equivalent to the onFullUpload callback)
       }}
     />
   </div>
 )
 ```
 
-Optimistic Updates
+#### Optimistic Updates
 
 ```tsx
 const sendMessage = createMutation(
   api.messages.create,
-  // -- Optimistic Update
+  // -- Optimistic Update (2ed argument, optional)
   (localStore, arg) => {
     const messages = localStore.getQuery(api.messages.get)
     if (!messages) return
