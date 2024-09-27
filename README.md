@@ -12,20 +12,26 @@ TypeScript client library for Convex in SolidJS.
 Create a `ConvexSolidClient` to connect to Convex
 
 ```typescript
-import { ConvexSolidClient } from "convex-solid-client"
+import { type Action, type Mutation, type OptionalFunctionArgs, ConvexSolidClient, baseAction, baseMutation, baseQuery } from "convex-solid-client"
 
-const convex = new ConvexSolidClient(import.meta.env.VITE_CONVEX_URL!)
+export const ConvexContext = createContext<Accessor<ConvexSolidClient>>(() => new ConvexSolidClient(clientEnv.VITE_CONVEX_URL))
 
-render(
-  () => {
-    return (
-      <ConvexContext.Provider value={convex}>
-          <App />
-      </ConvexContext.Provider>
-    )
-  },
-  document.getElementById("root") as HTMLElement
-)
+// create helper functions for creating mutations and queries
+
+export function createQuery<Q extends FunctionReference<"query">>(query: Q, ...args: OptionalFunctionArgs<Q>): () => FunctionReturnType<Q> | undefined {
+  const client = useContext(ConvexContext)
+  return baseQuery(client(), query, ...args)
+}
+
+export function createMutation<M extends FunctionReference<"mutation">>(mutation: M, options?: { optimisticUpdate?: OptimisticUpdate<FunctionArgs<M>> }): Mutation<M> {
+  const client = useContext(ConvexContext)
+  return baseMutation(client(), mutation, options)
+}
+
+export function createAction<A extends FunctionReference<"action">>(action: A): Action<A> {
+  const client = useContext(ConvexContext)
+  return baseAction(client(), action)
+}
 ```
 
 ## Usage
@@ -46,6 +52,37 @@ return (
     <For each={messages()}>{(message) => <div>{message.message}</div>}</For>
   </div>
 )
+```
+
+#### Authentication
+
+This example uses the `createSession` from `@solid-mediakit/auth` to handle authentication.
+
+```tsx
+export function ConvexProvider(props: FlowProps) {
+  const [convex, setConvex] = createSignal(new ConvexSolidClient(clientEnv.VITE_CONVEX_URL))
+  const session = createSession()
+  createEffect(() => {
+    setConvex((prev) => {
+      prev.setAuth(
+        async () => {
+          return session()?.convexToken || null
+        },
+        (isAuthenticated) => {
+          console.log("Convex is Authenticated: ", isAuthenticated)
+        }
+      )
+      return prev
+    })
+    return () => {
+      setConvex((prev) => {
+        prev.client.clearAuth()
+        return prev
+      })
+    }
+  })
+  return <ConvexContext.Provider value={convex}>{props.children}</ConvexContext.Provider>
+}
 ```
 
 #### Uploading Files

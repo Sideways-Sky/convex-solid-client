@@ -17,8 +17,8 @@ export type UploadFileResponse = fileDef & {
 
 export type progressTracking = {
   average: number
-  individual: Map<string, number>
-  both: { average: number; individual: Map<string, number> }
+  individual: Map<fileDef, number>
+  both: { average: number; individual: Map<fileDef, number> }
 }
 
 export function createUploadFiles<pt extends keyof progressTracking = "both", ptArgs = progressTracking[pt]>(
@@ -32,7 +32,7 @@ export function createUploadFiles<pt extends keyof progressTracking = "both", pt
 ) {
   const [isUploading, setUploading] = createSignal(false)
   let uploadProgress = 0
-  let fileProgress: Map<string, number> = new Map()
+  let fileProgress: Map<fileDef, number> = new Map()
 
   const startUpload = async (files: File[]) => {
     setUploading(true)
@@ -52,7 +52,7 @@ export function createUploadFiles<pt extends keyof progressTracking = "both", pt
                 opts.onProgressChange?.(fileProgress as ptArgs)
                 return
               }
-              fileProgress.set(file.name, progress)
+              fileProgress.set(file, progress)
               let sum = 0
               fileProgress.forEach((singleFileProgress) => {
                 sum += singleFileProgress

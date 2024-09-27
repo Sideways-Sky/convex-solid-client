@@ -10,7 +10,9 @@
     "declaration": true,
     "isolatedModules": true,
     "noEmit": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "jsxImportSource": "solid-js",
+    "jsx": "preserve"
   },
   "include": ["src"],
   "exclude": ["node_modules"]
