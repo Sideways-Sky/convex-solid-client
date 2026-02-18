@@ -25,12 +25,12 @@
   },
   "homepage": "https://github.com/Sideways-Sky/convex-solid-client#readme",
   "devDependencies": {
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4"
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "convex": "^1.15.0",
-    "solid-js": "^1.8.22"
+    "convex": "^1.16.2",
+    "solid-js": "^1.8.23"
   },
   "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
 }
